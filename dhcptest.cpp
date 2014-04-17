@@ -71,7 +71,7 @@ struct dhcpmessage {
 struct host {
   int ip_addr[4];
   uint8_t chaddr[16];
-}
+};
 
 /* Needed for the error handling, saves the errornumber */
 int errno;
