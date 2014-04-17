@@ -260,16 +260,16 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       /* Writing to the filestream */
       fputs("Offer received\n", fp);
 
-      sprintf(temp_str, "\top <%d>\n",replymsg.op);
+      cout << "\top <" << dec << recvdhcpmsg.op << ">" << endl;
       fputs(temp_str, fp);
 
-      sprintf(temp_str, "\txid <%u>\n",replymsg.xid);
+      cout << "\txid <" << dec << recvdhcpmsg.xid << ">" << endl;
       fputs(temp_str, fp);
 
-      sprintf(temp_str, "\tIP offered <%d.%d.%d.%d>\n",( replymsg.yiaddr >> (0*8) ) & 0xFF,( replymsg.yiaddr >> (1*8) ) & 0xFF,( replymsg.yiaddr >> (2*8) ) & 0xFF,( replymsg.yiaddr >> (3*8) ) & 0xFF);
+      cout << "\tIP offered <" << dec << (recvdhcpmsg.yiaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (1*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (2*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
       fputs(temp_str, fp);
 
-      sprintf(temp_str, "\tnext bootstrap server <%d.%d.%d.%d>\n",( replymsg.siaddr >> (0*8) ) & 0xFF,( replymsg.siaddr >> (1*8) ) & 0xFF,( replymsg.siaddr >> (2*8) ) & 0xFF,( replymsg.siaddr >> (3*8) ) & 0xFF);
+      cout << "\tnext bootstrap server <" << dec << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
       fputs(temp_str, fp);
 
       cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
