@@ -84,8 +84,8 @@ char ip_str[15];
 FILE *fp;
 
 /* Errorhandling. Writes the reason, as possible, to the terminal */
-int die(char* test) {
-  printf("dying in honor with : %s\n",test);
+int exception_handler(char* test) {
+  printf("Exception at: %s\n",test);
   printf("Error: %s\n", strerror(errno));
   exit(1);
 }
@@ -98,19 +98,19 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
   const int on=1;
   struct sockaddr_in servaddr,cliaddr,rservaddr;
   if((sockfd=socket(AF_INET,SOCK_DGRAM,0)) < 0)
-    die((char*)&"socket");
+    exception_handler((char*)&"socket");
   if(setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)) < 0)
-    die((char*)&"setsockopt");  
+    exception_handler((char*)&"setsockopt");  
 
   if(setsockopt(sockfd,SOL_SOCKET,SO_BROADCAST,&on,sizeof(on)) < 0)
-    die((char*)&"setsockopt");
+    exception_handler((char*)&"setsockopt");
   bzero(&servaddr,sizeof(servaddr));
   bzero(&cliaddr,sizeof(cliaddr));
   cliaddr.sin_port = htons(68);
   cliaddr.sin_family = AF_INET;
   cliaddr.sin_addr.s_addr = htonl(INADDR_ANY);
   if(bind(sockfd,(struct sockaddr*)&cliaddr,sizeof(cliaddr)) < 0)
-    die((char*)&"bind");
+    exception_handler((char*)&"bind");
 
   servaddr.sin_port = htons(67);
   servaddr.sin_family = AF_INET;
@@ -147,7 +147,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[3]=255;
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
-          die((char*)&"sendto");
+          exception_handler((char*)&"sendto");
         printf("(%d) DHCPDISCOVER package sent\n",mac);
 
         break;
@@ -165,7 +165,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[3]=255;
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
-          die((char*)&"sendto");
+          exception_handler((char*)&"sendto");
         printf("(%d) DHCPINFORM package sent\n",mac);
 
         break;
@@ -183,7 +183,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[3]=255;
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
-          die((char*)&"sendto");
+          exception_handler((char*)&"sendto");
         printf("(%d) DHCPRELEASE package sent\n",mac);
 
         break;
@@ -201,7 +201,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[3]=255;
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
-          die((char*)&"sendto");
+          exception_handler((char*)&"sendto");
         printf("(%d) DHCPINFORM package sent\n",mac);
 
         break;
@@ -224,11 +224,11 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
     if (setsockopt (sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
               sizeof(timeout)) < 0)
-      die((char*)&"setsockopt failed\n");
+      exception_handler((char*)&"setsockopt failed\n");
 
     if (setsockopt (sockfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout,
               sizeof(timeout)) < 0)
-      die((char*)&"setsockopt failed\n");
+      exception_handler((char*)&"setsockopt failed\n");
 
     struct dhcpmessage recvdhcpmsg;
     socklen_t rservlen = sizeof(rservaddr);
@@ -239,7 +239,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         printf("Timeout, dhcp server is slow\n");
         cout << strerror(errno) << endl;
       } else
-        die((char*)&"recvfrom");
+        exception_handler((char*)&"recvfrom");
     } else {
 
       struct dhcpmessage replymsg;
@@ -272,7 +272,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       sprintf(temp_str, "\tnext bootstrap server <%d.%d.%d.%d>\n",( replymsg.siaddr >> (0*8) ) & 0xFF,( replymsg.siaddr >> (1*8) ) & 0xFF,( replymsg.siaddr >> (2*8) ) & 0xFF,( replymsg.siaddr >> (3*8) ) & 0xFF);
       fputs(temp_str, fp);
 
-      sprintf(temp_str, "\toriginal mac adr <%02X:%02X:%02X:%02X:%02X:%02X>\n",replymsg.chaddr[0],replymsg.chaddr[1],replymsg.chaddr[2],replymsg.chaddr[3],replymsg.chaddr[4],replymsg.chaddr[5]);
+      cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
       fputs(temp_str, fp);
 
       /* Saving the IP stuff */
@@ -303,7 +303,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[8]=( replymsg.yiaddr >> (3*8) ) & 0xFF;
         dhcpmsg.opt[9]=255;
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
-          die((char*)&"sendto");
+          exception_handler((char*)&"sendto");
         printf("(ACK) package sent\n",mac);
 
         sprintf(temp_str, "(ACK) package sent\n",mac);
@@ -327,19 +327,19 @@ int to_listen() {
   const int on=1;
   struct sockaddr_in servaddr,cliaddr,rservaddr;
   if((sockfd=socket(AF_INET,SOCK_DGRAM,0)) < 0)
-    die((char*)&"socket");
+    exception_handler((char*)&"socket");
   if(setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)) < 0)
-    die((char*)&"setsockopt");  
+    exception_handler((char*)&"setsockopt");  
 
   if(setsockopt(sockfd,SOL_SOCKET,SO_BROADCAST,&on,sizeof(on)) < 0)
-    die((char*)&"setsockopt");
+    exception_handler((char*)&"setsockopt");
   bzero(&servaddr,sizeof(servaddr));
   bzero(&cliaddr,sizeof(cliaddr));
   cliaddr.sin_port = htons(68);
   cliaddr.sin_family = AF_INET;
   cliaddr.sin_addr.s_addr = htonl(INADDR_ANY);
   if(bind(sockfd,(struct sockaddr*)&cliaddr,sizeof(cliaddr)) < 0)
-    die((char*)&"bind");
+    exception_handler((char*)&"bind");
 
   struct timeval timeout;      
   timeout.tv_sec = 3;
@@ -347,11 +347,11 @@ int to_listen() {
 
   if (setsockopt (sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
             sizeof(timeout)) < 0)
-    die((char*)&"setsockopt failed\n");
+    exception_handler((char*)&"setsockopt failed\n");
 
   if (setsockopt (sockfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout,
             sizeof(timeout)) < 0)
-    die((char*)&"setsockopt failed\n");
+    exception_handler((char*)&"setsockopt failed\n");
 
   struct dhcpmessage recvdhcpmsg;
   socklen_t rservlen = sizeof(rservaddr);
@@ -360,7 +360,7 @@ int to_listen() {
     if (errno == 11)
       printf("");
     else
-      die((char*)&"recvfrom");
+      exception_handler((char*)&"recvfrom");
   } else {
 
     struct dhcpmessage replymsg;
@@ -375,8 +375,7 @@ int to_listen() {
     cout << "\txid <" << replymsg.xid << ">" << endl;
     cout << "\tIP offered <" << (replymsg.yiaddr >> (0*8) & 0xFF) << "." << (replymsg.yiaddr >> (1*8) & 0xFF) << "." << (replymsg.yiaddr >> (2*8) & 0xFF) << "." << (replymsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
     cout << "\tnext bootstrap server <" << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
-    // cout << "\toriginal mac adr <" << replymsg.chaddr[0] << ":" << replymsg.chaddr[0] << ":" << replymsg.chaddr[1] << ":" << replymsg.chaddr[2] << ":" << replymsg.chaddr[3] << ":" << replymsg.chaddr[4] << replymsg.chaddr[5] << ">" << endl;
-    printf("\toriginal mac adr <%02X:%02X:%02X:%02X:%02X:%02X>\n",replymsg.chaddr[0],replymsg.chaddr[1],replymsg.chaddr[2],replymsg.chaddr[3],replymsg.chaddr[4],replymsg.chaddr[5]);
+    cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
 
   }
 
