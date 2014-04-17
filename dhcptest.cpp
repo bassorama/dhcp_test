@@ -49,8 +49,7 @@
 using namespace std;
 
 /* the strucuts dhcpmessage and dhcpreplymessage are basicly the same, the reply message just got more options */
-struct dhcpmessage
-{
+struct dhcpmessage {
   uint8_t op;
   uint8_t htype;
   uint8_t hlen;
@@ -69,24 +68,10 @@ struct dhcpmessage
   char opt[10];
 } __attribute__((__packed__));
 
-struct dhcptest
-{
-  uint8_t op;
-  uint8_t htype;
-  uint8_t hlen;
-  uint8_t hops;
-  uint32_t xid;
-  uint16_t secs;
-  uint16_t flags;
-  uint32_t ciaddr;
-  uint32_t yiaddr;
-  uint32_t siaddr;
-  uint32_t giaddr;
+struct host {
+  int ip_addr[4];
   uint8_t chaddr[16];
-  char sname[64];
-  char file[128];
-  char magic[4];
-} __attribute__((__packed__));
+}
 
 /* Needed for the error handling, saves the errornumber */
 int errno;
@@ -534,52 +519,8 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    // this parameter is just meant for testing stuff
-    case 't': {
-
-      struct dhcptest testmsg;
-      cout << sizeof(testmsg) << endl;
-      char* testptr = new char[sizeof(testmsg)+10];
-
-      testmsg.op = 1;
-      testmsg.htype = 1;
-      testmsg.hlen = 6;
-      testmsg.hops = 0;
-      testmsg.xid = htonl(1000);
-      testmsg.secs = htons(0);
-      testmsg.flags = htons(0x8000);
-      testmsg.chaddr[0] = 0x00;
-      testmsg.chaddr[1] = 0x1A;
-      testmsg.chaddr[2] = 0x80;
-      testmsg.chaddr[3] = 0x80;
-      testmsg.chaddr[4] = 0x2C;
-      testmsg.chaddr[5] = 0x05;
-      testmsg.magic[0]=99;
-      testmsg.magic[1]=130;
-      testmsg.magic[2]=83;
-      testmsg.magic[3]=99;
-
-      testptr[(sizeof(testmsg)+0)]=5;
-      testptr[(sizeof(testmsg)+1)]=3;
-      testptr[(sizeof(testmsg)+2)]=1;
-      testptr[(sizeof(testmsg)+3)]=8;
-      testptr[(sizeof(testmsg)+4)]=2;
-      testptr[(sizeof(testmsg)+5)]=5;
-      testptr[(sizeof(testmsg)+6)]=5;
-
-      cout << " " << endl;
-
-      for(i=sizeof(testmsg); i<sizeof(testmsg)+10; i++) {
-        cout << dec << (int)testptr[i] << endl;
-      }
-
-      delete[] testptr;
-
-      break;
-    }
-
     default:
-      cout << "No valid parameters give. Try -h for help." << endl;
+      cout << "No valid parameters given. Try -h for help." << endl;
       break;
 
   }
