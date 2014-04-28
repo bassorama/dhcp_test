@@ -14,7 +14,7 @@
 *
 *       
 * 
-* AUTHOR :    Sebastian Roß       START DATE :    10 Apr 14
+* AUTHOR :    Sebastian Roß       START DATE :    14 Apr 14
 *
 * CHANGES :
 *
@@ -319,68 +319,6 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 }
 
 
-/* Just listen for DHCP packages and print to file/terminal */
-/* runs in an infinite loop, need to add break option.      */
-int to_listen() {
-
-  int sockfd,listenfd,connfd;
-  const int on=1;
-  struct sockaddr_in servaddr,cliaddr,rservaddr;
-  if((sockfd=socket(AF_INET,SOCK_DGRAM,0)) < 0)
-    exception_handler((char*)&"socket");
-  if(setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)) < 0)
-    exception_handler((char*)&"setsockopt");  
-
-  if(setsockopt(sockfd,SOL_SOCKET,SO_BROADCAST,&on,sizeof(on)) < 0)
-    exception_handler((char*)&"setsockopt");
-  bzero(&servaddr,sizeof(servaddr));
-  bzero(&cliaddr,sizeof(cliaddr));
-  cliaddr.sin_port = htons(68);
-  cliaddr.sin_family = AF_INET;
-  cliaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  if(bind(sockfd,(struct sockaddr*)&cliaddr,sizeof(cliaddr)) < 0)
-    exception_handler((char*)&"bind");
-
-  struct timeval timeout;      
-  timeout.tv_sec = 3;
-  timeout.tv_usec = 0;
-
-  if (setsockopt (sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
-            sizeof(timeout)) < 0)
-    exception_handler((char*)&"setsockopt failed\n");
-
-  if (setsockopt (sockfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout,
-            sizeof(timeout)) < 0)
-    exception_handler((char*)&"setsockopt failed\n");
-
-  struct dhcpmessage recvdhcpmsg;
-  socklen_t rservlen = sizeof(rservaddr);
-  int errorcode = recvfrom(sockfd,&recvdhcpmsg,sizeof(recvdhcpmsg),0,(struct sockaddr*)&rservaddr,&rservlen);
-  if (errorcode < 0) {
-    if (errno == 11)
-      printf("");
-    else
-      exception_handler((char*)&"recvfrom");
-  } else {
-
-    struct dhcpmessage replymsg;
-    bzero(&replymsg,sizeof(replymsg));
-    replymsg = recvdhcpmsg;
-
-    time_t rawtime; 
-    time(&rawtime);
-    cout << endl;
-    cout << "Received Package " << ctime(&rawtime);
-    cout << "\top <" << replymsg.op << ">" << endl;
-    cout << "\txid <" << replymsg.xid << ">" << endl;
-    cout << "\tIP offered <" << (replymsg.yiaddr >> (0*8) & 0xFF) << "." << (replymsg.yiaddr >> (1*8) & 0xFF) << "." << (replymsg.yiaddr >> (2*8) & 0xFF) << "." << (replymsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
-    cout << "\tnext bootstrap server <" << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
-    cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
-
-  }
-
-}
-
 
 /* Main routine, implements a simple terminal menu.Take care that the order of options in the config file is the same order as the */
 /* cin of the interactive menu, else that might upset the script.                                                                  */
@@ -410,14 +348,6 @@ int main(int argc, char *argv[]) {
   inputparam = argv[1];
 
   switch(inputparam[1]) {
-    case 'l': {
-      cout << "Listening.." << endl;
-      for(;;) {
-        to_listen();
-      }
-      break;
-    }
-
     case 's': {
 
       if(argc == 3) {
