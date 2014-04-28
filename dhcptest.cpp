@@ -248,7 +248,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       cout << endl;
       cout << "Package received " << ctime(&rawtime) << endl;
 
-      cout << "\top <" << dec << repl.op << ">" << endl;
+      cout << "\top <" << dec << replymsg.op << ">" << endl;
       //printf("\top <%d>\n",replymsg.op);
       cout << "\txid <" << dec << replymsg.xid << ">" << endl;
       //printf("\txid <%u>\n",replymsg.xid);
