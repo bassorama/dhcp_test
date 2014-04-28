@@ -6,15 +6,15 @@
 *
 *
 * NOTES :
-*       This script has been tested with Debian 6.0 (amd64) and
-*       GCC 4.4.5 (Debian 4.4.5-8), clang 1.1 (Debian 2.7-3).
+*       This script has been tested with Debian 7.0 (amd64) and
+*       gcc (Debian 4.7.2-5) 4.7.2.
 *       Run the compiled executable with the parameter h for
 *       further informations.
 *       An example config file(config.txt) is provided with this script.
 *
 *       
 * 
-* AUTHOR :    Sebastian Roß       START DATE :    16 Jul 12
+* AUTHOR :    Sebastian Roß       START DATE :    10 Apr 14
 *
 * CHANGES :
 *
