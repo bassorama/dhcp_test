@@ -209,11 +209,8 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
   }
 
-  /* Writes to the filestream*/
-  fputs("---\n", fp);
   char temp_str[30];
   sprintf(temp_str, "(%d) package sent\n",mac);
-  fputs(temp_str, fp);
 
   if (msg_type != 'i') {
 
@@ -257,23 +254,16 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       printf("\tnext bootstrap server <%d.%d.%d.%d>\n",( replymsg.siaddr >> (0*8) ) & 0xFF,( replymsg.siaddr >> (1*8) ) & 0xFF,( replymsg.siaddr >> (2*8) ) & 0xFF,( replymsg.siaddr >> (3*8) ) & 0xFF);
       printf("\toriginal mac adr <%02X:%02X:%02X:%02X:%02X:%02X>\n",replymsg.chaddr[0],replymsg.chaddr[1],replymsg.chaddr[2],replymsg.chaddr[3],replymsg.chaddr[4],replymsg.chaddr[5]);
 
-      /* Writing to the filestream */
-      fputs("Offer received\n", fp);
 
       cout << "\top <" << dec << recvdhcpmsg.op << ">" << endl;
-      fputs(temp_str, fp);
 
       cout << "\txid <" << dec << recvdhcpmsg.xid << ">" << endl;
-      fputs(temp_str, fp);
 
       cout << "\tIP offered <" << dec << (recvdhcpmsg.yiaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (1*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (2*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
-      fputs(temp_str, fp);
 
       cout << "\tnext bootstrap server <" << dec << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
-      fputs(temp_str, fp);
 
       cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
-      fputs(temp_str, fp);
 
       /* Saving the IP stuff */
       ip_addr[0] = (replymsg.yiaddr >> (0*8) ) & 0xFF;
