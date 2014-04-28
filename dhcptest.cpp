@@ -148,7 +148,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        printf("(%d) DHCPDISCOVER package sent\n",mac);
+        cout << "(" << mac << ") DHCPDISCOVER package sent" << endl;
 
         break;
       }
@@ -166,7 +166,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        printf("(%d) DHCPINFORM package sent\n",mac);
+        cout << "(" << mac << ") DHCPINFORM package sent" << endl;
 
         break;
       }
@@ -184,7 +184,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        printf("(%d) DHCPRELEASE package sent\n",mac);
+        cout << "(" << mac << ") DHCPRELEASE package sent" << endl;
 
         break;
       }
@@ -202,7 +202,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        printf("(%d) DHCPINFORM package sent\n",mac);
+        cout << "(" << mac << ") DHCPINFORM package sent" << endl;
 
         break;
     }
@@ -233,7 +233,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
     if (errorcode < 0) {
       printf ("error code (%d)\n",errno);
       if (errno == 11) {
-        printf("Timeout, dhcp server is slow\n");
+        cout << "Timeout, dhcp server is slow" << endl;
         cout << strerror(errno) << endl;
       } else
         exception_handler((char*)&"recvfrom");
@@ -290,7 +290,6 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
         cout << "(ACK) package sent (" << mac << ")" << endl;
-        //printf("(ACK) package sent\n",mac);
 
         sprintf(temp_str, "(ACK) package sent\n",mac);
       }
