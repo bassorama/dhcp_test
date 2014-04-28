@@ -291,7 +291,7 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
           exception_handler((char*)&"sendto");
         cout << "(ACK) package sent (" << mac << ")" << endl;
 
-        sprintf(temp_str, "(ACK) package sent\n",mac);
+        //sprintf(temp_str, "(ACK) package sent\n",mac);
       }
 
     }
