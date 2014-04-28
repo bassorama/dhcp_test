@@ -248,21 +248,22 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       cout << endl;
       cout << "Package received " << ctime(&rawtime) << endl;
 
-      printf("\top <%d>\n",replymsg.op);
-      printf("\txid <%u>\n",replymsg.xid);
-      printf("\tIP offered <%d.%d.%d.%d>\n",( replymsg.yiaddr >> (0*8) ) & 0xFF,( replymsg.yiaddr >> (1*8) ) & 0xFF,( replymsg.yiaddr >> (2*8) ) & 0xFF,( replymsg.yiaddr >> (3*8) ) & 0xFF);
-      printf("\tnext bootstrap server <%d.%d.%d.%d>\n",( replymsg.siaddr >> (0*8) ) & 0xFF,( replymsg.siaddr >> (1*8) ) & 0xFF,( replymsg.siaddr >> (2*8) ) & 0xFF,( replymsg.siaddr >> (3*8) ) & 0xFF);
-      printf("\toriginal mac adr <%02X:%02X:%02X:%02X:%02X:%02X>\n",replymsg.chaddr[0],replymsg.chaddr[1],replymsg.chaddr[2],replymsg.chaddr[3],replymsg.chaddr[4],replymsg.chaddr[5]);
+      cout << "\top <" << dec << repl.op << ">" << endl;
+      //printf("\top <%d>\n",replymsg.op);
+      cout << "\txid <" << dec << replymsg.xid << ">" << endl;
+      //printf("\txid <%u>\n",replymsg.xid);
+      cout << "\tIP offered <" << dec << (replymsg.yiaddr >> (0*8) & 0xFF) << "." << (replymsg.yiaddr >> (1*8) & 0xFF) << "." << (replymsg.yiaddr >> (2*8) & 0xFF) << "." << (replymsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
+      //printf("\tIP offered <%d.%d.%d.%d>\n",( replymsg.yiaddr >> (0*8) ) & 0xFF,( replymsg.yiaddr >> (1*8) ) & 0xFF,( replymsg.yiaddr >> (2*8) ) & 0xFF,( replymsg.yiaddr >> (3*8) ) & 0xFF);
+      cout << "\tnext bootstrap server <" << dec << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
+      //printf("\tnext bootstrap server <%d.%d.%d.%d>\n",( replymsg.siaddr >> (0*8) ) & 0xFF,( replymsg.siaddr >> (1*8) ) & 0xFF,( replymsg.siaddr >> (2*8) ) & 0xFF,( replymsg.siaddr >> (3*8) ) & 0xFF);
+      cout << "\toriginal mac adr <" << hex << static_cast<int>(replymsg.chaddr[0]) << ":" << static_cast<int>(replymsg.chaddr[1]) << ":" << static_cast<int>(replymsg.chaddr[2]) << ":" << static_cast<int>(replymsg.chaddr[3]) << ":" << static_cast<int>(replymsg.chaddr[4]) << ":" << static_cast<int>(replymsg.chaddr[5]) << ">" << endl;
+      //printf("\toriginal mac adr <%02X:%02X:%02X:%02X:%02X:%02X>\n",replymsg.chaddr[0],replymsg.chaddr[1],replymsg.chaddr[2],replymsg.chaddr[3],replymsg.chaddr[4],replymsg.chaddr[5]);
 
 
       cout << "\top <" << dec << recvdhcpmsg.op << ">" << endl;
-
       cout << "\txid <" << dec << recvdhcpmsg.xid << ">" << endl;
-
       cout << "\tIP offered <" << dec << (recvdhcpmsg.yiaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (1*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (2*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
-
       cout << "\tnext bootstrap server <" << dec << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
-
       cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
 
       /* Saving the IP stuff */
@@ -294,10 +295,10 @@ int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[9]=255;
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        printf("(ACK) package sent\n",mac);
+        cout << "(ACK) package sent (" << mac << ")" << endl;
+        //printf("(ACK) package sent\n",mac);
 
         sprintf(temp_str, "(ACK) package sent\n",mac);
-        fputs(temp_str, fp);
       }
 
     }
