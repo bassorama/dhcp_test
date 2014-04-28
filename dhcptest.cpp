@@ -83,10 +83,10 @@ char ip_str[15];
 /* file pointer */
 FILE *fp;
 
-/* Errorhandling. Writes the reason, as possible, to the terminal */
+/* Errorhandling. Writes the reason, as possible, to stdout */
 int exception_handler(char* test) {
-  printf("Exception at: %s\n",test);
-  printf("Error: %s\n", strerror(errno));
+  cout << "Exception at: " << test << endl;
+  cout << "Error: " << strerror(errno);
   exit(1);
 }
 
@@ -443,7 +443,6 @@ int main(int argc, char *argv[]) {
     }
 
     case 'h': {
-      cout << filename << " -l: Listen for DHCP packages send to this machine." << endl;
       cout << filename << " -s: Send DHCP packages. Additional Parameter specifices a config file." << endl;
       break;
     }
