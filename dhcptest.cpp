@@ -92,7 +92,7 @@ int exception_handler(char* test) {
 
 
 /* Universal DHCP sender. i = DHCPINFORM, d = DHCPDISCOVER+ -REQUEST, r = DHCPRELEASE  */
-int senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
+void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
   int sockfd,listenfd,connfd;
   const int on=1;
