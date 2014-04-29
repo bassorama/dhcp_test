@@ -148,7 +148,7 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        cout << "(" << mac << ") DHCPDISCOVER package sent" << endl;
+        cout << "(" << int(mac) << ") DHCPDISCOVER package sent" << endl;
 
         break;
       }
@@ -166,7 +166,7 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        cout << "(" << mac << ") DHCPINFORM package sent" << endl;
+        cout << "(" << int(mac) << ") DHCPINFORM package sent" << endl;
 
         break;
       }
@@ -184,7 +184,7 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
 
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        cout << "(" << mac << ") DHCPRELEASE package sent" << endl;
+        cout << "(" << int(mac) << ") DHCPRELEASE package sent" << endl;
 
         break;
       }
@@ -247,12 +247,21 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       time(&rawtime);
       cout << endl;
       cout << "Package received " << ctime(&rawtime) << endl;
-
+      
       cout << "\top <" << dec << replymsg.op << ">" << endl;
       cout << "\txid <" << dec << replymsg.xid << ">" << endl;
       cout << "\tIP offered <" << dec << (replymsg.yiaddr >> (0*8) & 0xFF) << "." << (replymsg.yiaddr >> (1*8) & 0xFF) << "." << (replymsg.yiaddr >> (2*8) & 0xFF) << "." << (replymsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
       cout << "\tnext bootstrap server <" << dec << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << "." << (replymsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
       cout << "\toriginal mac adr <" << hex << static_cast<int>(replymsg.chaddr[0]) << ":" << static_cast<int>(replymsg.chaddr[1]) << ":" << static_cast<int>(replymsg.chaddr[2]) << ":" << static_cast<int>(replymsg.chaddr[3]) << ":" << static_cast<int>(replymsg.chaddr[4]) << ":" << static_cast<int>(replymsg.chaddr[5]) << ">" << endl;
+      
+
+      /*
+      printf("\top <%d>\n",replymsg.op);
+      printf("\txid <%u>\n",replymsg.xid);
+      printf("\tIP offered <%d.%d.%d.%d>\n",( replymsg.yiaddr >> (0*8) ) & 0xFF,( replymsg.yiaddr >> (1*8) ) & 0xFF,( replymsg.yiaddr >> (2*8) ) & 0xFF,( replymsg.yiaddr >> (3*8) ) & 0xFF);
+      printf("\tnext bootstrap server <%d.%d.%d.%d>\n",( replymsg.siaddr >> (0*8) ) & 0xFF,( replymsg.siaddr >> (1*8) ) & 0xFF,( replymsg.siaddr >> (2*8) ) & 0xFF,( replymsg.siaddr >> (3*8) ) & 0xFF);
+      printf("\toriginal mac adr <%02X:%02X:%02X:%02X:%02X:%02X>\n",replymsg.chaddr[0],replymsg.chaddr[1],replymsg.chaddr[2],replymsg.chaddr[3],replymsg.chaddr[4],replymsg.chaddr[5]);
+      */
 
       cout << "\top <" << dec << recvdhcpmsg.op << ">" << endl;
       cout << "\txid <" << dec << recvdhcpmsg.xid << ">" << endl;
@@ -289,7 +298,7 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
         dhcpmsg.opt[9]=255;
         if(sendto(sockfd,&dhcpmsg,sizeof(dhcpmsg),0,(struct sockaddr*)&servaddr,sizeof(servaddr)) < 0)
           exception_handler((char*)&"sendto");
-        cout << "(ACK) package sent (" << mac << ")" << endl;
+        cout << "(ACK) package sent (" << int(mac) << ")" << endl;
 
         //sprintf(temp_str, "(ACK) package sent\n",mac);
       }
