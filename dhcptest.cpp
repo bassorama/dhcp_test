@@ -80,9 +80,6 @@ int errno;
 int ip_addr[4], *p;
 char ip_str[15];
 
-/* file pointer */
-FILE *fp;
-
 /* Errorhandling. Writes the reason, as possible, to stdout */
 int exception_handler(char* test) {
   cout << "Exception at: " << test << endl;
@@ -248,7 +245,7 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       cout << endl;
       cout << "Package received " << ctime(&rawtime) << endl;
       
-      
+
       cout << "\top <" << dec << recvdhcpmsg.op << ">" << endl;
       cout << "\txid <" << dec << recvdhcpmsg.xid << ">" << endl;
       cout << "\tIP offered <" << dec << (recvdhcpmsg.yiaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (1*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (2*8) & 0xFF) << "." << (recvdhcpmsg.yiaddr >> (3*8) & 0xFF) << ">" << endl;
@@ -286,7 +283,6 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
           exception_handler((char*)&"sendto");
         cout << "(ACK) package sent (" << int(mac) << ")" << endl;
 
-        //sprintf(temp_str, "(ACK) package sent\n",mac);
       }
 
     }
@@ -390,12 +386,6 @@ int main(int argc, char *argv[]) {
 
       }
 
-      /* Open a file pointer */
-      if ((fp = fopen("output.txt", "w+"))==NULL) {
-        cout << "Cannot open the file." << endl;
-        exit(1);
-      }
-
       /* This sends a specified number of DHCPINFORM, DHCPDISCOVER and DHCPRELEASE packages, number is specified in interval */
       for(i=40;i<40+interval;i++) {
         int j;
@@ -415,8 +405,6 @@ int main(int argc, char *argv[]) {
         cout << "---" << endl;
       }
 
-      /* Closing the file pointer */
-      fclose(fp);
       break;
 
     }
