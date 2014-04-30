@@ -68,10 +68,6 @@ struct dhcpmessage {
   char opt[10];
 } __attribute__((__packed__));
 
-struct host {
-  int ip_addr[4];
-  uint8_t chaddr[16];
-};
 
 /* Needed for the error handling, saves the errornumber */
 int errno;
@@ -201,7 +197,6 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
           exception_handler((char*)&"sendto");
         cout << "(" << mac << ") DHCPINFORM package sent" << endl;
 
-        break;
     }
 
   }
@@ -252,7 +247,7 @@ void senddhcp(char msg_type, uint8_t mac, char* address, char* sourceaddr) {
       cout << "\tnext bootstrap server <" << dec << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << "." << (recvdhcpmsg.siaddr >> (0*8) & 0xFF) << ">" << endl; 
       cout << "\toriginal mac adr <" << hex << static_cast<int>(recvdhcpmsg.chaddr[0]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[1]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[2]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[3]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[4]) << ":" << static_cast<int>(recvdhcpmsg.chaddr[5]) << ">" << endl;
 
-      /* Saving the IP stuff */
+      /* Saving the received IP, so we can release the IP in the next step */
       ip_addr[0] = (replymsg.yiaddr >> (0*8) ) & 0xFF;
       ip_addr[1] = (replymsg.yiaddr >> (1*8) ) & 0xFF;
       ip_addr[2] = (replymsg.yiaddr >> (2*8) ) & 0xFF;
@@ -301,7 +296,6 @@ int main(int argc, char *argv[]) {
   uint8_t i=0;
 
   char* sourceaddr = new char[15];
-  // sourceaddr = new char[15];
   char* address = new char[15];
   char* release_bool = new char[1];
   int interval;
@@ -416,9 +410,13 @@ int main(int argc, char *argv[]) {
 
     default:
       cout << "No valid parameters given. Try -h for help." << endl;
-      break;
 
   }
+
+  delete sourceaddr;
+  delete address;
+  delete release_bool;
+  delete rand_bool;
 
   return 0;
 }
